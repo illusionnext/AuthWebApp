@@ -1,6 +1,8 @@
-import db from "./db";
+import DB from "./db";
+import { trainingsTypes } from "@/types/trainings";
 
-export function getTrainings() {
+export async function getTrainings(): Promise<trainingsTypes[]> {
+  const db = await DB();
   const stmt = db.prepare("SELECT * FROM trainings");
-  return stmt.all();
+  return stmt.all() as trainingsTypes[];
 }

@@ -1,3 +1,5 @@
+"use server";
+import "server-only";
 import sql from "better-sqlite3";
 
 const db = sql("training.db");
@@ -27,7 +29,11 @@ db.exec(`
 `);
 
 const hasTrainings =
-    (db.prepare("SELECT COUNT(*) as count FROM trainings").get() as { count: number }).count > 0;
+  (
+    db.prepare("SELECT COUNT(*) as count FROM trainings").get() as {
+      count: number;
+    }
+  ).count > 0;
 
 if (!hasTrainings) {
   db.exec(`
@@ -43,4 +49,10 @@ if (!hasTrainings) {
   `);
 }
 
-export default db;
+// export async function doesUserExist(email: string): Promise<boolean> {
+//   const stmt = db.prepare("SELECT COUNT(*) as count FROM users WHERE email = ?");
+//   return (stmt.get(email) as { count: number }).count > 0;
+// }
+export default async function DB() {
+  return db;
+}
