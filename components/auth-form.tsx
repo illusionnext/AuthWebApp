@@ -1,19 +1,21 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
+import { useActionState } from "react";
+import { signUp } from "@/actions/auth";
 
-interface signUpProps {
-  message: string | null;
-  errors: Record<string, string>;
-  formAction: (formData: FormData) => void;
-  isPending: boolean;
-}
+// interface signUpProps {
+//   message: string | null;
+//   errors: Record<string, string>;
+//   formAction: (formData: FormData) => void;
+//   isPending: boolean;
+// }
 
-export default function AuthForm({
-  message,
-  errors,
-  formAction,
-  isPending,
-}: signUpProps) {
+export default function AuthForm() {
+  const [state, formAction, isPending] = useActionState(signUp, {
+    message: null,
+    errors: {},
+  });
   return (
     <form id="auth-form" action={formAction}>
       <div>
@@ -25,7 +27,7 @@ export default function AuthForm({
           priority
         />
       </div>
-      {message && <p className="form-errors">{message}</p>}
+
       <p>
         <label htmlFor="email">Email</label>
         <input
@@ -35,7 +37,9 @@ export default function AuthForm({
           required
           placeholder="example@example.com"
         />
-        {errors.email && <span className="form-errors">{errors.email}</span>}
+        {state?.errors?.email && (
+          <span id="form-errors">{state.errors.email}</span>
+        )}
       </p>
       <p>
         <label htmlFor="password">Password</label>
@@ -46,14 +50,15 @@ export default function AuthForm({
           required
           placeholder="Password must be at least 8 characters long"
         />
-        {errors.password && (
-          <span className="form-errors">{errors.password}</span>
+        {state?.errors?.password && (
+          <span id="form-errors">{state.errors.password}</span>
         )}
       </p>
       <p>
         <button type="submit" disabled={isPending}>
           {isPending ? "Creating..." : "Create Account"}
         </button>
+        {state?.message && <span id="form-errors">{state.message}</span>}
       </p>
       <p>
         <Link href="/">Login with existing account.</Link>
